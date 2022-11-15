@@ -86,7 +86,7 @@ public class ByteBuf {
     public String readString(int maxLength) {
         final int length = readVarInt();
         if (length > maxLength) {
-            logger.warn("String length exceeds max length (" + length + "/" + maxLength + ")");
+            logger.warn("String length exceeds max length ({}/{})", length, maxLength);
         }
         byte[] bytes = new byte[length];
         buffer.get(bytes);

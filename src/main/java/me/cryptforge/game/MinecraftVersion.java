@@ -3,6 +3,8 @@ package me.cryptforge.game;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import me.cryptforge.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +22,7 @@ public record MinecraftVersion(
         @JsonProperty("majorVersion") String majorVersion
 ) {
 
+    private static final Logger logger = LoggerFactory.getLogger(MinecraftVersion.class);
     private static final Map<Integer, MinecraftVersion> protocolVersionMap = new HashMap<>();
 
     public static CompletableFuture<Void> load(String url) {
@@ -33,8 +36,7 @@ public record MinecraftVersion(
 
                 return Collections.unmodifiableMap(map);
             } catch (IOException e) {
-                System.err.println("Failed to load minecraft versions!");
-                System.err.println(e.getMessage());
+                logger.error("Failed to load minecraft versions!");
                 throw new RuntimeException(e);
             }
         }).thenAccept(protocolVersionMap::putAll);

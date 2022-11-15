@@ -53,7 +53,9 @@ public class Main {
 
         try {
             versionLoading.get(10, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException | TimeoutException e) {
             logger.error("Unable to load minecraft versions");
             return;
         }

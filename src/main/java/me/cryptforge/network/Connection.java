@@ -52,7 +52,7 @@ public class Connection {
         packet.write(writeBuffer); // write packet
         final int length = writeBuffer.nio().position() - (startPosition + 3);
         if (length > 2097151) {
-            logger.warn("Attempted to send packet that exceeded the maximum packet size (size: {}, class: {})", length, packet.getClass().toString());
+            logger.warn("Attempted to send packet that exceeded the maximum packet size (size: {}, class: {})", length, packet.getClass());
             return;
         }
         writeBuffer.writeVarIntHeader(startPosition, length); // write packet length
@@ -125,10 +125,6 @@ public class Connection {
     public void init(int protocolVersion) {
         this.protocolVersion = protocolVersion;
         this.initialized = true;
-    }
-
-    public boolean isInitialized() {
-        return initialized;
     }
 
     public int getProtocolVersion() {
