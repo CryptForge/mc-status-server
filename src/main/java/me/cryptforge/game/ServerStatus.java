@@ -9,6 +9,7 @@ public record ServerStatus(
         boolean hidePlayers,
         PlayerSample players,
         Component description,
+        Favicon favicon,
         boolean previewsChat,
         boolean enforcesSecureChat
 ) {

@@ -47,7 +47,7 @@ public class Connection {
     public void sendPacket(SendablePacket packet) {
         writeBuffer.nio().clear();
         final int startPosition = writeBuffer.nio().position();
-        writeBuffer.nio().position(writeBuffer.nio().position() + 3);
+        writeBuffer.skip(3);
         writeBuffer.writeVarInt(PacketRegistry.getId(packet.getClass())); // write packet id
         packet.write(writeBuffer); // write packet
         final int length = writeBuffer.nio().position() - (startPosition + 3);

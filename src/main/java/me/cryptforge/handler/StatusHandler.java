@@ -28,6 +28,7 @@ public final class StatusHandler extends PacketHandler {
                             Main.config().sample()
                     ),
                     Main.config().motd(),
+                    Main.config().favicon(),
                     true,
                     true
             );

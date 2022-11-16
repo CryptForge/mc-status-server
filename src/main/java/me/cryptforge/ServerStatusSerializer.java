@@ -25,7 +25,10 @@ public class ServerStatusSerializer extends StdSerializer<ServerStatus> {
             gen.writeObjectField("players", value.players());
         }
         gen.writeObjectField("description", value.description());
-        // TODO: favicon
+        if (value.favicon() != null) {
+            final String faviconEncoded = value.favicon().encode();
+            gen.writeStringField("favicon", "data:image/png;base64," + faviconEncoded);
+        }
         gen.writeBooleanField("previewsChat", value.previewsChat());
         gen.writeBooleanField("enforcesSecureChat", value.enforcesSecureChat());
         gen.writeEndObject();
