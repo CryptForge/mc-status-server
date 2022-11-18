@@ -43,8 +43,7 @@ public class Main {
         try {
             root = configLoader.load();
         } catch (ConfigurateException e) {
-            logger.error("Something went wrong while loading the config");
-            e.printStackTrace();
+            logger.error("Something went wrong while loading the config",e);
             return;
         }
 
@@ -56,11 +55,11 @@ public class Main {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException | TimeoutException e) {
-            logger.error("Unable to load minecraft versions");
+            logger.error("Unable to load minecraft versions",e);
             return;
         }
         Main.config = config;
-        final Server server = new Server(config.address(), config.port());
+        final Server server = new Server("0.0.0.0", config.port());
         server.start();
     }
 
@@ -78,8 +77,7 @@ public class Main {
 
             Files.copy(inputStream, file.toPath());
         } catch (IOException e) {
-            logger.error("Unable to copy bundled config file to file system");
-            e.printStackTrace();
+            logger.error("Unable to copy bundled config file to file system",e);
         }
     }
 

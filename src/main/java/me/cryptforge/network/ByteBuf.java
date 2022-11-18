@@ -113,21 +113,13 @@ public class ByteBuf {
     }
 
     public void skip(int amount) {
-        nio().position(nio().position() + amount);
-    }
-
-    public int getVarIntSize(int value) {
-        if ((value & (0xFFFFFFFF << 7)) == 0) {
-            return 1;
-        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
-            return 2;
-        } else if ((value & (0xFFFFFFFF << 21)) == 0) {
-            return 3;
-        } else if ((value & (0xFFFFFFFF << 28)) == 0) {
-            return 4;
-        } else {
-            return 5;
+        final int bytesLeft = nio().limit() - nio().position();
+        if(bytesLeft == 0) {
+            return;
         }
+        if(amount > bytesLeft)
+            amount = bytesLeft;
+        nio().position(nio().position() + amount);
     }
 
     public static ByteBuf allocate(int capacity) {

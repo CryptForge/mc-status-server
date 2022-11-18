@@ -82,9 +82,8 @@ public class Connection {
                 }
                 final int id = readBuffer.readVarInt();
                 if (!PacketRegistry.isValidId(id, state)) {
-                    logger.warn("Received unimplemented packet (id: {}, state: {})", id, state);
-                    readBuffer.skip(length - 3 - readBuffer.getVarIntSize(id));
-                    continue;
+                    logger.warn("Received unknown packet (id: {}, state: {})", id, state);
+                    return;
                 }
                 final Packet packet = PacketRegistry.getConstructor(id, state).create(readBuffer);
                 handler.handlePacket(packet);
@@ -117,8 +116,7 @@ public class Connection {
         try {
             channel.close();
         } catch (IOException e) {
-            logger.error("Failed to close connection with {}", address.getHostString());
-            e.printStackTrace();
+            logger.error("Failed to close connection with {}", address.getHostString(),e);
         }
     }
 

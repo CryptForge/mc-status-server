@@ -4,9 +4,8 @@ plugins {
 }
 
 group = "me.cryptforge"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
-val jacksonVersion = "2.14.0"
 val adventureVersion = "4.11.0"
 
 repositories {
@@ -15,7 +14,7 @@ repositories {
 
 dependencies {
     // Json
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0")
 
     // Minecraft Text
     implementation("net.kyori:adventure-api:$adventureVersion")
