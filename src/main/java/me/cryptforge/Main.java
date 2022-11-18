@@ -59,7 +59,7 @@ public class Main {
             return;
         }
         Main.config = config;
-        final Server server = new Server("0.0.0.0", config.port());
+        final Server server = new Server(config.address(), config.port());
         server.start();
     }
 
