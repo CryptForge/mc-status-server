@@ -76,7 +76,7 @@ public class Server {
     private void acceptClient(ServerSocketChannel serverChannel) throws IOException {
         SocketChannel client = serverChannel.accept();
         client.configureBlocking(false);
-        client.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, new Connection(client));
+        client.register(selector, SelectionKey.OP_READ, new Connection(client));
     }
 
 }
