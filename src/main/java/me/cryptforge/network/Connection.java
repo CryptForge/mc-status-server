@@ -116,7 +116,7 @@ public class Connection {
         try {
             channel.close();
         } catch (IOException e) {
-            logger.error("Failed to close connection with {}", address.getHostString(),e);
+            logger.error("Failed to close connection with {}", address.getHostString(), e);
         }
     }
 

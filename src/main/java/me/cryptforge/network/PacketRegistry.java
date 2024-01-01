@@ -62,7 +62,7 @@ public final class PacketRegistry {
         return classIdMap.get(clazz);
     }
 
-    interface PacketConstructor {
+    public interface PacketConstructor {
         Packet create(ByteBuf buffer);
     }
 

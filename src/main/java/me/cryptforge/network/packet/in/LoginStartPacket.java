@@ -3,9 +3,11 @@ package me.cryptforge.network.packet.in;
 import me.cryptforge.network.ByteBuf;
 import me.cryptforge.network.packet.Packet;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
-public class LoginStartPacket implements Packet {
+public final class LoginStartPacket implements Packet {
 
     private final String name;
     private final boolean hasSigData;
@@ -53,5 +55,21 @@ public class LoginStartPacket implements Packet {
 
     public UUID uuid() {
         return uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final LoginStartPacket that = (LoginStartPacket) o;
+        return hasSigData == that.hasSigData && timestamp == that.timestamp && hasUUID == that.hasUUID && Objects.equals(name, that.name) && Arrays.equals(publicKey, that.publicKey) && Arrays.equals(signature, that.signature) && Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(name, hasSigData, timestamp, hasUUID, uuid);
+        result = 31 * result + Arrays.hashCode(publicKey);
+        result = 31 * result + Arrays.hashCode(signature);
+        return result;
     }
 }

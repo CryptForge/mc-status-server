@@ -6,7 +6,7 @@ plugins {
 group = "me.cryptforge"
 version = "1.0"
 
-val adventureVersion = "4.11.0"
+val adventureVersion = "4.15.0"
 
 repositories {
     mavenCentral()
@@ -26,7 +26,7 @@ dependencies {
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.3")
-    implementation("ch.qos.logback:logback-classic:1.4.4")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
 }
 
 tasks.shadowJar {
@@ -35,4 +35,9 @@ tasks.shadowJar {
             "Main-Class" to "me.cryptforge.Main"
         )
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }

@@ -1,5 +1,6 @@
 package me.cryptforge.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import me.cryptforge.Main;
@@ -7,13 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record MinecraftVersion(
         @JsonProperty("minecraftVersion") String name,
         @JsonProperty("version") int protocol,
@@ -28,11 +30,12 @@ public record MinecraftVersion(
     public static CompletableFuture<Void> load(String url) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                final List<MinecraftVersion> list = Main.objectMapper().readValue(new URL(url), new TypeReference<>() {
-                });
                 final Map<Integer, MinecraftVersion> map = new HashMap<>();
 
-                list.forEach(version -> map.put(version.protocol(), version));
+                Main.objectMapper()
+                        .readValue(URI.create(url).toURL(), new TypeReference<List<MinecraftVersion>>() {
+                        })
+                        .forEach(version -> map.put(version.protocol, version));
 
                 return Collections.unmodifiableMap(map);
             } catch (IOException e) {

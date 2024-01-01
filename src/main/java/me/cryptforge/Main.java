@@ -43,7 +43,7 @@ public class Main {
         try {
             root = configLoader.load();
         } catch (ConfigurateException e) {
-            logger.error("Something went wrong while loading the config",e);
+            logger.error("Something went wrong while loading the config", e);
             return;
         }
 
@@ -55,7 +55,7 @@ public class Main {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException | TimeoutException e) {
-            logger.error("Unable to load minecraft versions",e);
+            logger.error("Unable to load minecraft versions", e);
             return;
         }
         Main.config = config;
@@ -77,7 +77,7 @@ public class Main {
 
             Files.copy(inputStream, file.toPath());
         } catch (IOException e) {
-            logger.error("Unable to copy bundled config file to file system",e);
+            logger.error("Unable to copy bundled config file to file system", e);
         }
     }
 

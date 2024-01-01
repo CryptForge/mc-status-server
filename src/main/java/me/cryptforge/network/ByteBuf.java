@@ -114,10 +114,10 @@ public class ByteBuf {
 
     public void skip(int amount) {
         final int bytesLeft = nio().limit() - nio().position();
-        if(bytesLeft == 0) {
+        if (bytesLeft == 0) {
             return;
         }
-        if(amount > bytesLeft)
+        if (amount > bytesLeft)
             amount = bytesLeft;
         nio().position(nio().position() + amount);
     }
