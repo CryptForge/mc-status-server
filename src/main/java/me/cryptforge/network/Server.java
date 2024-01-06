@@ -5,78 +5,60 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Server {
+public final class Server {
 
-    private static final Logger logger = LoggerFactory.getLogger(Server.class);
-
-    private boolean hasStarted;
-
-    private final Selector selector;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
     private final InetSocketAddress address;
+    private boolean running;
 
     public Server(String address, int port) {
         this.address = new InetSocketAddress(address, port);
-
-        try {
-            selector = Selector.open();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void start() {
-        if (hasStarted) return;
-        try {
-            final ServerSocketChannel channel = ServerSocketChannel.open();
-            final ServerSocket socket = channel.socket();
+        if (running) {
+            return;
+        }
+        running = true;
+        try (
+                final ServerSocketChannel serverChannel = ServerSocketChannel.open();
+                final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()
+        ) {
+            serverChannel.bind(address);
 
-            socket.bind(address);
-            channel.configureBlocking(false);
+            while (running) {
+                final SocketChannel channel = serverChannel.accept();
 
-            channel.register(selector, SelectionKey.OP_ACCEPT);
+                executor.submit(() -> {
+                    LOGGER.info("Client connected!");
+                    try {
+                        final Connection connection = new Connection(channel);
 
-            hasStarted = true;
-            logger.info("Server started at " + address.getHostName() + ":" + address.getPort() + "!");
-
-            while (true) {
-                selector.select();
-                Set<SelectionKey> keys = selector.selectedKeys();
-                Iterator<SelectionKey> keyIterator = keys.iterator();
-
-                while (keyIterator.hasNext()) {
-                    SelectionKey key = keyIterator.next();
-
-                    if (key.isAcceptable()) {
-                        acceptClient(channel);
-                    } else if (key.isReadable()) {
-                        process(key);
+                        while (channel.isOpen()) {
+                            connection.processPacket();
+                        }
+                    } catch (IOException e) {
+                        LOGGER.error("Critical failure while reading packet", e);
+                    } finally {
+                        try {
+                            channel.close();
+                            LOGGER.info("Client disconnected!");
+                        } catch (IOException e) {
+                            LOGGER.error("Failed to close connection", e);
+                        }
                     }
-                    keyIterator.remove();
-                }
+                });
             }
+            LOGGER.info("Shutting down...");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void process(SelectionKey key) throws IOException {
-        final Connection connection = (Connection) key.attachment();
-        connection.processPacket();
-    }
-
-    private void acceptClient(ServerSocketChannel serverChannel) throws IOException {
-        SocketChannel client = serverChannel.accept();
-        client.configureBlocking(false);
-        client.register(selector, SelectionKey.OP_READ, new Connection(client));
     }
 
 }
